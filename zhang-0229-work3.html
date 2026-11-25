@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <style>
+        /* 全局：海盐青为底，四角晕染珊瑚、琥珀、薄荷与淡紫，像一张铺开的旅行手帐 */
+        body {
+            font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+            background-color: #e3f7f7;
+            background-image:
+                linear-gradient(rgba(31, 125, 120, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(31, 125, 120, 0.05) 1px, transparent 1px),
+                radial-gradient(circle at 8% 12%, rgba(224, 122, 95, 0.18), transparent 28%),
+                radial-gradient(circle at 92% 16%, rgba(106, 168, 163, 0.24), transparent 30%),
+                radial-gradient(circle at 16% 88%, rgba(233, 180, 76, 0.18), transparent 26%),
+                radial-gradient(circle at 86% 84%, rgba(143, 134, 184, 0.18), transparent 28%),
+                linear-gradient(160deg, #e3f7f7 0%, #fbfcf7 55%, #eef8f4 100%);
+            background-size: 24px 24px, 24px 24px, auto, auto, auto, auto, auto;
+            color: #173b3b;
+            text-align: center;
+            margin: 0;
+            padding: 36px 14px;
+        }
+
+        /* 作业指定样式：除 background-color 外，以下声明与要求完全一致 */
+        .page {
+            display: inline-block;
+            background-color: #E3F7F7;
+            box-shadow: 0 0 30px rgba(80, 58, 35, 0.25);
+            text-align: left;
+            max-width: 720px;
+        }
+
+        /* 并集选择器：统一标题字形与字色 */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: "Songti SC", "STSong", "SimSun", serif;
+            letter-spacing: 1px;
+            color: #123c40;
+        }
+
+        .sheet {
+            position: relative;
+            padding: 42px 46px 34px;
+        }
+
+        /* 两条和纸胶带，纯 CSS 装饰 */
+        .sheet::before {
+            content: "";
+            position: absolute;
+            left: -12px;
+            top: 18px;
+            width: 96px;
+            height: 22px;
+            background: rgba(233, 180, 76, 0.48);
+            transform: rotate(-6deg);
+        }
+
+        .sheet::after {
+            content: "";
+            position: absolute;
+            right: -12px;
+            top: 24px;
+            width: 96px;
+            height: 22px;
+            background: rgba(224, 122, 95, 0.38);
+            transform: rotate(5deg);
+        }
+
+        /* 报头：双色细线与旋转印章 */
+        .masthead {
+            position: relative;
+            padding: 22px 82px 18px 0;
+            background: linear-gradient(135deg, rgba(23, 107, 104, 0.11), rgba(224, 122, 95, 0.07));
+            border-radius: 2px;
+        }
+
+        .masthead::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 58px;
+            height: 3px;
+            background: linear-gradient(90deg, #e07a5f, #e9b44c);
+        }
+
+        .masthead::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 58px;
+            height: 3px;
+            background: linear-gradient(90deg, #6aa8a3, #8f86b8);
+        }
+
+        .stamp {
+            position: absolute;
+            right: 0;
+            top: 16px;
+            width: 72px;
+            height: 72px;
+            border: 1px dashed #e07a5f;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.62);
+            color: #b45f49;
+            text-align: center;
+            font-size: 9px;
+            letter-spacing: 1px;
+            line-height: 1.3;
+            transform: rotate(11deg);
+            display: table;
+        }
+
+        .stamp p {
+            display: table-cell;
+            vertical-align: middle;
+            margin: 0;
+        }
+
+        .kicker {
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 5px;
+            color: #b45f49;
+        }
+
+        h1 {
+            font-size: 27px;
+            line-height: 1.5;
+            text-align: center;
+            font-weight: 600;
+            margin: 12px 0 8px;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+        }
+
+        .subline {
+            text-align: center;
+            font-size: 14px;
+            letter-spacing: 3px;
+            color: #4d8b86;
+        }
+
+        /* 四色渐变分隔线 + 菱形节点 */
+        .rule {
+            position: relative;
+            height: 1px;
+            background: linear-gradient(to right, rgba(224, 122, 95, 0), #e9b44c, #6aa8a3, rgba(143, 134, 184, 0));
+        }
+
+        .rule::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: -3px;
+            width: 7px;
+            height: 7px;
+            background: #e07a5f;
+            transform: translateX(-50%) rotate(45deg);
+        }
+
+        /* 板块编号：不同颜色的小圆点 */
+        .label {
+            position: relative;
+            display: inline-block;
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: #6a8f8b;
+            padding-left: 15px;
+            margin: 0 0 4px;
+        }
+
+        .label::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 4px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--dot, #6aa8a3);
+        }
+
+        .label-about { --dot: #e07a5f; }
+        .label-index { --dot: #e9b44c; }
+        .label-links { --dot: #6aa8a3; }
+        .label-notes { --dot: #8f86b8; }
+
+        h2 {
+            font-size: 20px;
+            color: #b45f49;
+            margin: 6px 0 10px;
+        }
+
+        h3 {
+            font-size: 18px;
+            color: #176b68;
+            margin: 6px 0 12px;
+            text-align: center;
+        }
+
+        .intro-text {
+            font-size: 15px;
+            line-height: 1.9;
+            text-indent: 2em;
+            color: #2b4f51;
+        }
+
+        /* 路线条：用多个 p 做彩色胶囊 */
+        .route {
+            text-align: center;
+            margin: 14px 0;
+            font-size: 0;
+        }
+
+        .chip {
+            display: inline-block;
+            font-size: 12px;
+            letter-spacing: 1px;
+            padding: 6px 10px;
+            margin: 3px 2px;
+            border-radius: 12px;
+            background: #d5efeb;
+            color: #176b68;
+        }
+
+        .chip.c1 { background: #f7dccf; color: #a4503b; }
+        .chip.c2 { background: #f9ebc9; color: #8a6414; }
+        .chip.c3 { background: #d9eef0; color: #176b68; }
+        .chip.c4 { background: #e8e3f4; color: #6a5f96; }
+
+        .arrow {
+            display: inline-block;
+            font-size: 12px;
+            color: #6a8f8b;
+            margin: 0 2px;
+        }
+
+        /* ID 选择器：只强调重要提示，不影响 h2 id="intro" */
+        p#intro {
+            font-size: 118%;
+            font-weight: bold;
+            color: #a4503b;
+            background: linear-gradient(90deg, #f7dccf, #fff5e6);
+            border-left: 4px solid #e07a5f;
+            padding: 10px 14px;
+            line-height: 1.7;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 8px 22px rgba(18, 60, 64, 0.1);
+        }
+
+        th {
+            position: relative;
+            background: linear-gradient(135deg, #176b68, #2f8f88);
+            color: #ffffff;
+            text-align: left;
+            line-height: 2.2;
+            letter-spacing: 1px;
+            padding-left: 10px;
+        }
+
+        th::after {
+            content: "";
+            position: absolute;
+            left: 10px;
+            bottom: 6px;
+            width: 22px;
+            height: 2px;
+            background: #e9b44c;
+        }
+
+        td {
+            line-height: 2.1;
+            border-bottom: 1px solid #d7ece8;
+            padding-left: 10px;
+        }
+
+        td:first-child {
+            font-family: Georgia, serif;
+            font-size: 13px;
+            color: #6a8f8b;
+        }
+
+        table tr:nth-child(2) td:first-child { box-shadow: inset 3px 0 0 #e07a5f; }
+        table tr:nth-child(3) td:first-child { box-shadow: inset 3px 0 0 #e9b44c; }
+        table tr:nth-child(4) td:first-child { box-shadow: inset 3px 0 0 #6aa8a3; }
+        table tr:nth-child(5) td:first-child { box-shadow: inset 3px 0 0 #8f86b8; }
+        table tr:nth-child(2) td:last-child { color: #a4503b; font-weight: bold; }
+        table tr:nth-child(3) td:last-child { color: #8a6414; font-weight: bold; }
+        table tr:nth-child(4) td:last-child { color: #176b68; font-weight: bold; }
+        table tr:nth-child(5) td:last-child { color: #6a5f96; font-weight: bold; }
+
+        table tr:nth-child(even) td {
+            background-color: rgba(223, 241, 237, 0.58);
+        }
+
+        table tr:hover td {
+            background-color: #eaf6f3;
+        }
+
+        .caption {
+            font-size: 11px;
+            color: #6a8f8b;
+            text-align: center;
+            margin: 8px 0 12px;
+        }
+
+        /* 后代选择器：只有 div 内 table 内的链接才会被强调 */
+        div table a {
+            font-weight: bold;
+            color: #176b68;
+            text-decoration: underline;
+            text-decoration-color: #e07a5f;
+        }
+
+        /* 链接伪类：覆盖四种状态 */
+        a:link {
+            color: #176b68;
+            text-decoration: none;
+        }
+
+        a:visited {
+            color: #7a6f9e;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #b45f49;
+            text-decoration: underline;
+        }
+
+        a:active {
+            color: #176b68;
+            text-decoration: underline;
+        }
+
+        a:focus-visible {
+            outline: 2px dashed #e07a5f;
+            outline-offset: 3px;
+        }
+
+        /* 带类名的链接：珊瑚主按钮与薄荷描边按钮 */
+        a.red {
+            display: inline-block;
+            min-width: 216px;
+            padding: 10px 20px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #e07a5f, #f0a35f);
+            border-radius: 2px;
+            box-shadow: 0 6px 14px rgba(224, 122, 95, 0.28);
+            letter-spacing: 1px;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        a.blue {
+            display: inline-block;
+            min-width: 216px;
+            padding: 10px 20px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #6aa8a3, #176b68);
+            border: 1px solid #176b68;
+            border-radius: 2px;
+            box-shadow: 0 6px 14px rgba(23, 107, 104, 0.2);
+            letter-spacing: 1px;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        a.red:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 18px rgba(224, 122, 95, 0.34);
+        }
+
+        a.blue:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 18px rgba(23, 107, 104, 0.28);
+        }
+
+        .link-panel {
+            text-align: center;
+            padding: 8px 0 4px;
+            background: radial-gradient(circle at 50% 60%, rgba(213, 239, 235, 0.7), transparent 72%);
+        }
+
+        .link-panel p {
+            margin: 8px 0;
+        }
+
+        /* 伪元素：段落首字放大、div 首行加色 */
+        p::first-letter {
+            font-size: 130%;
+            color: #e07a5f;
+            font-weight: bold;
+        }
+
+        div::first-line {
+            color: #123c40;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .kicker::first-letter,
+        .subline::first-letter,
+        .label::first-letter,
+        .chip::first-letter,
+        .arrow::first-letter,
+        .caption::first-letter,
+        .stamp p::first-letter,
+        .folio::first-letter {
+            font-size: 100%;
+            color: inherit;
+            font-weight: normal;
+        }
+
+        .notice {
+            font-size: 13px;
+            line-height: 1.9;
+            color: #456a68;
+            background-color: rgba(255, 255, 255, 0.66);
+            border-left: 3px solid #8f86b8;
+            padding: 14px 18px;
+        }
+
+        .notice::before {
+            content: "";
+            display: block;
+            height: 3px;
+            background: linear-gradient(90deg, #e07a5f, #e9b44c, #6aa8a3, #8f86b8);
+            margin-bottom: 10px;
+        }
+
+        .notice p {
+            margin: 7px 0;
+        }
+
+        .notice p:nth-of-type(2) { border-left: 2px solid #e07a5f; padding-left: 8px; }
+        .notice p:nth-of-type(3) { border-left: 2px solid #e9b44c; padding-left: 8px; }
+        .notice p:nth-of-type(4) { border-left: 2px solid #6aa8a3; padding-left: 8px; }
+
+        .folio {
+            text-align: center;
+            font-size: 10px;
+            letter-spacing: 4px;
+            color: #8aa9a5;
+            margin: 14px 0 0;
+        }
+
+        @media (max-width: 760px) {
+            .sheet { padding: 30px 22px; }
+            h1 { font-size: 22px; }
+            .masthead { padding-right: 0; }
+            .stamp { display: none; }
+            table { font-size: 12px; }
+            a.red, a.blue { min-width: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page">
+<div class="sheet">
+
+    <!-- ① 顶部标题区 -->
+    <div class="masthead">
+        <p class="kicker">FIELD NOTES · JINAN · 2026</p>
+        <h1>趵突泉街 · 城市旅行写生本交流夜 · City Sketchbook Night</h1>
+        <p class="subline">把一路所见，收进一页速写</p>
+        <div class="stamp"><p>SKETCH<br>NIGHT</p></div>
+    </div>
+
+    <div class="rule"></div><br>
+
+    <!-- ② 活动介绍区 -->
+    <div>
+        <p class="label label-about">01 / ABOUT THE NIGHT</p>
+        <h2 id="intro">本周主题：把城市走成一本速写本</h2>
+        <p class="intro-text">本周六傍晚，我们从趵突泉街出发，带上空白速写本，沿泉池、石桥与老街慢慢走。把看到的檐角、水纹与行人收进纸面，再用几行短句记下当时的风。</p>
+        <p class="intro-text">Every journey begins with a single sketch. 不需要画得像，只要把停留过的角度认真留下；我们会把各自的页面摊在桌上，交换路线，也交换看这座城市的方式。</p>
+        <div class="route">
+            <p class="chip c1">趵突泉街</p><p class="arrow">→</p>
+            <p class="chip c2">黑虎泉</p><p class="arrow">→</p>
+            <p class="chip c3">曲水亭街</p><p class="arrow">→</p>
+            <p class="chip c4">大明湖西岸</p>
+        </div>
+        <p id="intro">重要提示：请自带速写本与一支顺手的笔，提前十分钟到达集合点；席位有限，报名成功后以短信确认为准。</p>
+    </div>
+
+    <div class="rule"></div><br>
+
+    <!-- ③ 活动报名信息表格区 -->
+    <div>
+        <p class="label label-index">02 / SKETCH INDEX</p>
+        <h3>报名与速写索引</h3>
+        <table>
+            <tr>
+                <th>编号</th>
+                <th>记录者</th>
+                <th>速写地点</th>
+                <th>旅途主题</th>
+            </tr>
+            <tr>
+                <td>01</td>
+                <td><a href="https://example.com/photos" title="打开趵突泉速写页">青禾的趵突泉速写页</a></td>
+                <td>趵突泉池畔</td>
+                <td>泉水与石栏</td>
+            </tr>
+            <tr>
+                <td>02</td>
+                <td><a href="https://example.com/online" title="查看泉城路线记录">阿岫的泉城路线记录</a></td>
+                <td>黑虎泉至护城河</td>
+                <td>水线与桥影</td>
+            </tr>
+            <tr>
+                <td>03</td>
+                <td>林间</td>
+                <td>曲水亭街</td>
+                <td>街巷与檐角</td>
+            </tr>
+            <tr>
+                <td>04</td>
+                <td>小满</td>
+                <td>大明湖西岸</td>
+                <td>湖风与归舟</td>
+            </tr>
+        </table>
+        <p class="caption">每一页速写都会编号归档，活动结束后可凭编号索取扫描件。</p>
+    </div>
+
+    <div class="rule"></div><br>
+
+    <!-- ④ 页面链接区：red 指向教师参考代码页，blue 指向自己的上一次作业页面 -->
+    <div class="link-panel">
+        <p class="label label-links">03 / FURTHER READING</p>
+        <p><a class="red" href="https://hongchenwusdnu.github.io/bookstore/job4.html" title="教师参考代码页面">往期速写记录与路线档案</a></p>
+        <p><a class="blue" href="https://zzjh211.github.io/work2/Zhang-0229-work2.html" title="我的第三次上机作业：大提琴社招新页面">我的第三次作业 · 招新记录页</a></p>
+    </div>
+
+    <div class="rule"></div><br>
+
+    <!-- ⑤ 底部公告区 -->
+    <div class="notice">
+        <p class="label label-notes">04 / PRACTICAL NOTES</p>
+        <p>集合地点：趵突泉街东口，泉城广场西侧入口。<br>签到时间：周六 18:40 开始，19:00 准时出发。</p>
+        <p>建议装备：A5 速写本、铅笔或细头钢笔，穿一双适合走路的鞋。<br>现场备有温水与简易坐垫，无需额外准备。</p>
+        <p>天气预案：遇降雨改为室内临摹，路线会提前在群里公布。<br>咨询方式：在群内回复姓名与联系方式，我们会逐条确认。</p>
+    </div>
+
+    <p class="folio">FIELD NOTES / 001</p>
+
+</div>
+</div>
+
+</body>
+</html>
